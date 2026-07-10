@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Flores Amarillas para ti</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&display=swap');
+
+  :root {
+    --cream: #f7f0e3;
+    --cream-deep: #efe4d0;
+    --bark: #6b3f24;
+    --bark-dark: #4a2a16;
+    --leaf: #3f7a3a;
+    --petal: #ffd54a;
+    --petal-deep: #f5b800;
+    --center: #6b3a12;
+    --ink: #3a2a1a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    min-height: 100%;
+    background:
+      radial-gradient(ellipse at 50% 0%, #fffaf0 0%, var(--cream) 55%, var(--cream-deep) 100%);
+    font-family: 'Cormorant Garamond', serif;
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+
+  .stage {
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 1.4rem 1rem 2.5rem;
+    position: relative;
+  }
+
+  .title {
+    text-align: center;
+    margin-top: 0.4rem;
+    z-index: 3;
+  }
+
+  .title h1 {
+    font-family: 'Caveat', cursive;
+    font-size: clamp(2rem, 8vw, 3rem);
+    font-weight: 700;
+    color: #c48a00;
+    line-height: 1.1;
+  }
+
+  .title p {
+    margin-top: 0.35rem;
+    font-size: 0.95rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.55;
+  }
+
+  .frame {
+    position: relative;
+    width: min(92vw, 360px);
+    height: min(68vh, 480px);
+    margin-top: 1.2rem;
+    background: linear-gradient(180deg, #fff8ea 0%, #f3e6cf 100%);
+    border: 1px solid rgba(107, 63, 36, 0.18);
+    border-radius: 18px;
+    box-shadow: 0 18px 40px rgba(90, 50, 20, 0.12);
+    overflow: hidden;
+  }
+
+  .sky {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 70% 18%, rgba(255, 230, 120, 0.35), transparent 40%),
+      linear-gradient(180deg, #fff9ef, #f0e2c8);
+  }
+
+  .ground {
+    position: absolute;
+    left: -10%;
+    right: -10%;
+    bottom: 0;
+    height: 22%;
+    background: linear-gradient(180deg, #c8df9a, #9cbc6a);
+    border-radius: 50% 50% 0 0 / 40% 40% 0 0;
+  }
+
+  .tree {
+    position: absolute;
+    left: 50%;
+    bottom: 16%;
+    width: 220px;
+    height: 300px;
+    transform: translateX(-50%) scale(0.2);
+    transform-origin: 50% 100%;
+    opacity: 0;
+    transition: transform 1.4s cubic-bezier(.2,.8,.2,1), opacity 0.6s ease;
+  }
+
+  .tree.grown {
+    transform: translateX(-50%) scale(1);
+    opacity: 1;
+  }
+
+  .trunk {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 18px;
+    height: 140px;
+    transform: translateX(-50%);
+    background: linear-gradient(90deg, var(--bark-dark), var(--bark) 45%, #8a5632);
+    border-radius: 8px 8px 2px 2px;
+  }
+
+  .trunk::before {
+    content: '';
+    position: absolute;
+    left: -22px;
+    top: 38px;
+    width: 50px;
+    height: 10px;
+    background: var(--bark);
+    border-radius: 8px;
+    transform: rotate(-28deg);
+  }
+
+  .trunk::after {
+    content: '';
+    position: absolute;
+    right: -24px;
+    top: 55px;
+    width: 55px;
+    height: 10px;
+    background: var(--bark);
+    border-radius: 8px;
+    transform: rotate(32deg);
+  }
+
+  .canopy {
+    position: absolute;
+    left: 50%;
+    top: 8px;
+    width: 210px;
+    height: 170px;
+    transform: translateX(-50%);
+  }
+
+  .flower {
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    opacity: 0;
+    transform: scale(0);
+    transition: opacity 0.4s ease, transform 0.55s cubic-bezier(.2,.9,.2,1.2);
+  }
+
+  .flower.show {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .flower .petal {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 10px;
+    height: 16px;
+    margin-left: -5px;
+    margin-top: -16px;
+    background: linear-gradient(180deg, var(--petal), var(--petal-deep));
+    border-radius: 50% 50% 45% 45%;
+    transform-origin: 50% 100%;
+  }
+
+  .flower .core {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 10px;
+    height: 10px;
+    margin: -5px 0 0 -5px;
+    background: radial-gradient(circle at 35% 35%, #a05a20, var(--center));
+    border-radius: 50%;
+    z-index: 2;
+  }
+
+  .falling {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    pointer-events: none;
+    z-index: 5;
+    animation: fall linear forwards;
+  }
+
+  .falling .petal {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 7px;
+    height: 11px;
+    margin-left: -3.5px;
+    margin-top: -11px;
+    background: linear-gradient(180deg, var(--petal), var(--petal-deep));
+    border-radius: 50% 50% 45% 45%;
+    transform-origin: 50% 100%;
+  }
+
+  .falling .core {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 6px;
+    height: 6px;
+    margin: -3px 0 0 -3px;
+    background: var(--center);
+    border-radius: 50%;
+  }
+
+  @keyframes fall {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(420px) rotate(360deg); opacity: 0; }
+  }
+
+  .message {
+    margin-top: 1.4rem;
+    text-align: center;
+    max-width: 320px;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+
+  .message.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .message .line {
+    font-family: 'Caveat', cursive;
+    font-size: clamp(1.5rem, 6vw, 2rem);
+    color: #b8860b;
+    line-height: 1.25;
+  }
+
+  .message .sub {
+    margin-top: 0.45rem;
+    font-size: 1rem;
+    font-style: italic;
+    opacity: 0.7;
+  }
+
+  .cta {
+    margin-top: 1.5rem;
+    border: none;
+    background: linear-gradient(180deg, #ffd34d, #f0b400);
+    color: #4a2f00;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    padding: 0.85rem 1.6rem;
+    border-radius: 999px;
+    cursor: pointer;
+    box-shadow: 0 10px 24px rgba(200, 140, 0, 0.28);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    z-index: 4;
+  }
+
+  .cta:active { transform: scale(0.97); }
+  .cta.hidden { display: none; }
+
+  .again {
+    margin-top: 1rem;
+    background: transparent;
+    border: 1px solid rgba(107, 63, 36, 0.25);
+    color: var(--ink);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.06em;
+    padding: 0.55rem 1.1rem;
+    border-radius: 999px;
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+
+  .again.show {
+    opacity: 0.7;
+    pointer-events: auto;
+  }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <div class="title">
+      <h1>Flores Amarillas</h1>
+      <p>para dedicar</p>
+    </div>
+
+    <div class="frame" id="frame">
+      <div class="sky"></div>
+      <div class="ground"></div>
+      <div class="tree" id="tree">
+        <div class="canopy" id="canopy"></div>
+        <div class="trunk"></div>
+      </div>
+    </div>
+
+    <div class="message" id="message">
+      <p class="line">Estas flores son para ti</p>
+      <p class="sub">porque mereces algo bonito hoy</p>
+    </div>
+
+    <button class="cta" id="start">Abrir flores</button>
+    <button class="again" id="again">ver de nuevo</button>
+  </div>
+
+<script>
+  const canopy = document.getElementById('canopy');
+  const tree = document.getElementById('tree');
+  const frame = document.getElementById('frame');
+  const message = document.getElementById('message');
+  const start = document.getElementById('start');
+  const again = document.getElementById('again');
+
+  const spots = [
+    [18, 42], [38, 18], [58, 8], [78, 22], [102, 12],
+    [128, 20], [152, 14], [172, 34], [48, 48], [72, 40],
+    [96, 36], [120, 44], [144, 48], [64, 68], [90, 62],
+    [116, 70], [140, 66], [84, 90], [110, 88], [132, 92],
+    [28, 70], [160, 72], [50, 100], [150, 100]
+  ];
+
+  function makePetals(el, count) {
+    for (let i = 0; i < count; i++) {
+      const p = document.createElement('div');
+      p.className = 'petal';
+      p.style.transform = `rotate(${(360 / count) * i}deg)`;
+      el.appendChild(p);
+    }
+    const core = document.createElement('div');
+    core.className = 'core';
+    el.appendChild(core);
+  }
+
+  function buildFlowers() {
+    canopy.innerHTML = '';
+    spots.forEach(([x, y], i) => {
+      const f = document.createElement('div');
+      f.className = 'flower';
+      f.style.left = x + 'px';
+      f.style.top = y + 'px';
+      f.dataset.i = i;
+      makePetals(f, 8);
+      canopy.appendChild(f);
+    });
+  }
+
+  function bloom() {
+    const flowers = [...canopy.querySelectorAll('.flower')];
+    flowers.forEach((f, i) => {
+      setTimeout(() => f.classList.add('show'), 180 + i * 70);
+    });
+  }
+
+  function spawnFalling() {
+    for (let i = 0; i < 10; i++) {
+      setTimeout(() => {
+        const f = document.createElement('div');
+        f.className = 'falling';
+        f.style.left = (12 + Math.random() * 76) + '%';
+        f.style.top = (8 + Math.random() * 20) + '%';
+        f.style.animationDuration = (2.4 + Math.random() * 1.8) + 's';
+        makePetals(f, 6);
+        frame.appendChild(f);
+        setTimeout(() => f.remove(), 4500);
+      }, i * 220);
+    }
+  }
+
+  function play() {
+    start.classList.add('hidden');
+    again.classList.remove('show');
+    message.classList.remove('show');
+    tree.classList.remove('grown');
+    buildFlowers();
+
+    requestAnimationFrame(() => {
+      tree.classList.add('grown');
+      setTimeout(bloom, 700);
+      setTimeout(() => {
+        message.classList.add('show');
+        spawnFalling();
+        again.classList.add('show');
+      }, 2200);
+    });
+  }
+
+  buildFlowers();
+  start.addEventListener('click', play);
+  again.addEventListener('click', play);
+</script>
+</body>
+</html>
