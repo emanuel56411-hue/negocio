@@ -2,32 +2,20 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Flores Amarillas para ti</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&display=swap');
-
-  :root {
-    --cream: #f7f0e3;
-    --cream-deep: #efe4d0;
-    --bark: #6b3f24;
-    --bark-dark: #4a2a16;
-    --leaf: #3f7a3a;
-    --petal: #ffd54a;
-    --petal-deep: #f5b800;
-    --center: #6b3a12;
-    --ink: #3a2a1a;
-  }
+  @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Quicksand:wght@500;600&display=swap');
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   html, body {
     min-height: 100%;
-    background:
-      radial-gradient(ellipse at 50% 0%, #fffaf0 0%, var(--cream) 55%, var(--cream-deep) 100%);
-    font-family: 'Cormorant Garamond', serif;
-    color: var(--ink);
+    background: #f6efe3;
+    font-family: 'Quicksand', sans-serif;
+    color: #3d2a14;
     overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
   }
 
   .stage {
@@ -36,267 +24,193 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
-    padding: 1.4rem 1rem 2.5rem;
-    position: relative;
+    padding: 1.2rem 1rem 2rem;
   }
 
   .title {
     text-align: center;
-    margin-top: 0.4rem;
-    z-index: 3;
+    z-index: 2;
   }
 
   .title h1 {
     font-family: 'Caveat', cursive;
-    font-size: clamp(2rem, 8vw, 3rem);
-    font-weight: 700;
-    color: #c48a00;
-    line-height: 1.1;
+    font-size: clamp(2.2rem, 9vw, 3.2rem);
+    color: #d4a017;
+    line-height: 1;
+    text-shadow: 0 2px 0 rgba(255,255,255,.5);
   }
 
   .title p {
-    margin-top: 0.35rem;
-    font-size: 0.95rem;
-    letter-spacing: 0.12em;
+    margin-top: .25rem;
+    font-size: .78rem;
+    letter-spacing: .18em;
     text-transform: uppercase;
-    opacity: 0.55;
+    color: #8a6a3a;
   }
 
-  .frame {
+  .scene {
     position: relative;
-    width: min(92vw, 360px);
-    height: min(68vh, 480px);
-    margin-top: 1.2rem;
-    background: linear-gradient(180deg, #fff8ea 0%, #f3e6cf 100%);
-    border: 1px solid rgba(107, 63, 36, 0.18);
-    border-radius: 18px;
-    box-shadow: 0 18px 40px rgba(90, 50, 20, 0.12);
+    width: min(94vw, 380px);
+    aspect-ratio: 3 / 4;
+    margin-top: 1rem;
+    border-radius: 22px;
     overflow: hidden;
+    background:
+      radial-gradient(circle at 78% 14%, rgba(255, 220, 90, .45), transparent 28%),
+      linear-gradient(180deg, #fff8ea 0%, #f3e6cf 55%, #e8d7b4 100%);
+    box-shadow:
+      0 0 0 1px rgba(120, 80, 30, .12),
+      0 22px 50px rgba(90, 55, 20, .16);
   }
 
-  .sky {
+  .grass {
+    position: absolute;
+    left: -8%;
+    right: -8%;
+    bottom: -2%;
+    height: 26%;
+    background: linear-gradient(180deg, #b8d978 0%, #7fad4a 70%, #6a963c 100%);
+    border-radius: 50% 50% 0 0 / 55% 55% 0 0;
+    z-index: 1;
+  }
+
+  .grass::before,
+  .grass::after {
+    content: '';
+    position: absolute;
+    bottom: 55%;
+    width: 10px;
+    height: 28px;
+    background: #6f9e3f;
+    border-radius: 40% 40% 10% 10%;
+    transform-origin: 50% 100%;
+  }
+  .grass::before { left: 18%; transform: rotate(-18deg); }
+  .grass::after { right: 22%; transform: rotate(16deg); height: 34px; }
+
+  .art {
     position: absolute;
     inset: 0;
-    background:
-      radial-gradient(circle at 70% 18%, rgba(255, 230, 120, 0.35), transparent 40%),
-      linear-gradient(180deg, #fff9ef, #f0e2c8);
-  }
-
-  .ground {
-    position: absolute;
-    left: -10%;
-    right: -10%;
-    bottom: 0;
-    height: 22%;
-    background: linear-gradient(180deg, #c8df9a, #9cbc6a);
-    border-radius: 50% 50% 0 0 / 40% 40% 0 0;
-  }
-
-  .tree {
-    position: absolute;
-    left: 50%;
-    bottom: 16%;
-    width: 220px;
-    height: 300px;
-    transform: translateX(-50%) scale(0.2);
-    transform-origin: 50% 100%;
-    opacity: 0;
-    transition: transform 1.4s cubic-bezier(.2,.8,.2,1), opacity 0.6s ease;
-  }
-
-  .tree.grown {
-    transform: translateX(-50%) scale(1);
-    opacity: 1;
-  }
-
-  .trunk {
-    position: absolute;
-    left: 50%;
-    bottom: 0;
-    width: 18px;
-    height: 140px;
-    transform: translateX(-50%);
-    background: linear-gradient(90deg, var(--bark-dark), var(--bark) 45%, #8a5632);
-    border-radius: 8px 8px 2px 2px;
-  }
-
-  .trunk::before {
-    content: '';
-    position: absolute;
-    left: -22px;
-    top: 38px;
-    width: 50px;
-    height: 10px;
-    background: var(--bark);
-    border-radius: 8px;
-    transform: rotate(-28deg);
-  }
-
-  .trunk::after {
-    content: '';
-    position: absolute;
-    right: -24px;
-    top: 55px;
-    width: 55px;
-    height: 10px;
-    background: var(--bark);
-    border-radius: 8px;
-    transform: rotate(32deg);
-  }
-
-  .canopy {
-    position: absolute;
-    left: 50%;
-    top: 8px;
-    width: 210px;
-    height: 170px;
-    transform: translateX(-50%);
-  }
-
-  .flower {
-    position: absolute;
-    width: 28px;
-    height: 28px;
-    opacity: 0;
-    transform: scale(0);
-    transition: opacity 0.4s ease, transform 0.55s cubic-bezier(.2,.9,.2,1.2);
-  }
-
-  .flower.show {
-    opacity: 1;
-    transform: scale(1);
-  }
-
-  .flower .petal {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 10px;
-    height: 16px;
-    margin-left: -5px;
-    margin-top: -16px;
-    background: linear-gradient(180deg, var(--petal), var(--petal-deep));
-    border-radius: 50% 50% 45% 45%;
-    transform-origin: 50% 100%;
-  }
-
-  .flower .core {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 10px;
-    height: 10px;
-    margin: -5px 0 0 -5px;
-    background: radial-gradient(circle at 35% 35%, #a05a20, var(--center));
-    border-radius: 50%;
+    width: 100%;
+    height: 100%;
     z-index: 2;
   }
 
-  .falling {
+  .tree-group {
+    transform-origin: 190px 470px;
+    transform: scale(0.15);
+    opacity: 0;
+    transition: transform 1.5s cubic-bezier(.22,1,.36,1), opacity .5s ease;
+  }
+
+  .tree-group.grown {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  .flower-node {
+    transform-box: fill-box;
+    transform-origin: center;
+    opacity: 0;
+    transform: scale(0);
+  }
+
+  .flower-node.show {
+    animation: bloom .75s cubic-bezier(.2,1.2,.3,1) forwards;
+  }
+
+  .flower-node.sway {
+    opacity: 1;
+    transform: scale(1);
+    animation: sway 3.4s ease-in-out infinite;
+  }
+
+  @keyframes bloom {
+    0% { opacity: 0; transform: scale(0) rotate(-25deg); }
+    65% { opacity: 1; transform: scale(1.15) rotate(5deg); }
+    100% { opacity: 1; transform: scale(1) rotate(0deg); }
+  }
+
+  @keyframes sway {
+    0%, 100% { transform: rotate(-4deg); }
+    50% { transform: rotate(4deg); }
+  }
+
+  .petal-fall {
     position: absolute;
-    width: 14px;
-    height: 14px;
+    width: 18px;
+    height: 18px;
     pointer-events: none;
     z-index: 5;
     animation: fall linear forwards;
-  }
-
-  .falling .petal {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 7px;
-    height: 11px;
-    margin-left: -3.5px;
-    margin-top: -11px;
-    background: linear-gradient(180deg, var(--petal), var(--petal-deep));
-    border-radius: 50% 50% 45% 45%;
-    transform-origin: 50% 100%;
-  }
-
-  .falling .core {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 6px;
-    height: 6px;
-    margin: -3px 0 0 -3px;
-    background: var(--center);
-    border-radius: 50%;
+    filter: drop-shadow(0 2px 2px rgba(0,0,0,.12));
   }
 
   @keyframes fall {
-    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-    100% { transform: translateY(420px) rotate(360deg); opacity: 0; }
+    0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+    100% { transform: translateY(460px) rotate(420deg) scale(.7); opacity: 0; }
   }
 
   .message {
-    margin-top: 1.4rem;
+    margin-top: 1.25rem;
     text-align: center;
     max-width: 320px;
     opacity: 0;
-    transform: translateY(16px);
-    transition: opacity 0.9s ease, transform 0.9s ease;
+    transform: translateY(18px);
+    transition: .9s ease;
   }
 
   .message.show {
     opacity: 1;
-    transform: translateY(0);
+    transform: none;
   }
 
   .message .line {
     font-family: 'Caveat', cursive;
-    font-size: clamp(1.5rem, 6vw, 2rem);
-    color: #b8860b;
-    line-height: 1.25;
+    font-size: clamp(1.7rem, 7vw, 2.2rem);
+    color: #c49200;
+    line-height: 1.2;
   }
 
   .message .sub {
-    margin-top: 0.45rem;
-    font-size: 1rem;
-    font-style: italic;
-    opacity: 0.7;
+    margin-top: .35rem;
+    font-size: .95rem;
+    color: #7a5a30;
+  }
+
+  .cta, .again {
+    margin-top: 1.2rem;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 600;
+    border-radius: 999px;
+    cursor: pointer;
   }
 
   .cta {
-    margin-top: 1.5rem;
     border: none;
-    background: linear-gradient(180deg, #ffd34d, #f0b400);
-    color: #4a2f00;
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.05rem;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    padding: 0.85rem 1.6rem;
-    border-radius: 999px;
-    cursor: pointer;
-    box-shadow: 0 10px 24px rgba(200, 140, 0, 0.28);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    z-index: 4;
+    background: linear-gradient(180deg, #ffd95a, #f0b400);
+    color: #4a3000;
+    font-size: 1rem;
+    padding: .9rem 1.7rem;
+    box-shadow: 0 12px 28px rgba(200, 140, 0, .3);
   }
 
-  .cta:active { transform: scale(0.97); }
+  .cta:active { transform: scale(.97); }
   .cta.hidden { display: none; }
 
   .again {
-    margin-top: 1rem;
     background: transparent;
-    border: 1px solid rgba(107, 63, 36, 0.25);
-    color: var(--ink);
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 0.9rem;
-    letter-spacing: 0.06em;
-    padding: 0.55rem 1.1rem;
-    border-radius: 999px;
-    cursor: pointer;
+    border: 1px solid rgba(120, 80, 30, .28);
+    color: #5a3d1c;
+    font-size: .88rem;
+    padding: .55rem 1.15rem;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.4s ease;
+    transition: opacity .4s;
   }
 
   .again.show {
-    opacity: 0.7;
+    opacity: .8;
     pointer-events: auto;
   }
 </style>
@@ -308,13 +222,109 @@
       <p>para dedicar</p>
     </div>
 
-    <div class="frame" id="frame">
-      <div class="sky"></div>
-      <div class="ground"></div>
-      <div class="tree" id="tree">
-        <div class="canopy" id="canopy"></div>
-        <div class="trunk"></div>
-      </div>
+    <div class="scene" id="scene">
+      <div class="grass"></div>
+      <svg class="art" viewBox="0 0 380 520" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <radialGradient id="petalGrad" cx="35%" cy="25%" r="75%">
+            <stop offset="0%" stop-color="#ffe566"/>
+            <stop offset="55%" stop-color="#ffcc22"/>
+            <stop offset="100%" stop-color="#e8a400"/>
+          </radialGradient>
+          <radialGradient id="centerGrad" cx="40%" cy="35%" r="70%">
+            <stop offset="0%" stop-color="#8b5a22"/>
+            <stop offset="100%" stop-color="#4a2a0c"/>
+          </radialGradient>
+          <linearGradient id="barkGrad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#4a2a14"/>
+            <stop offset="45%" stop-color="#7a4a28"/>
+            <stop offset="100%" stop-color="#5a3418"/>
+          </linearGradient>
+          <linearGradient id="leafGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#7ec85a"/>
+            <stop offset="100%" stop-color="#3f8a35"/>
+          </linearGradient>
+          <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+            <feDropShadow dx="0" dy="2" stdDeviation="1.4" flood-color="#000" flood-opacity=".18"/>
+          </filter>
+
+          <!-- Girasol reutilizable -->
+          <g id="sunflower">
+            <g>
+              <ellipse cx="0" cy="-16" rx="7" ry="15" fill="url(#petalGrad)" transform="rotate(0)"/>
+              <ellipse cx="0" cy="-16" rx="7" ry="15" fill="url(#petalGrad)" transform="rotate(22.5)"/>
+              <ellipse cx="0" cy="-16" rx="7" ry="15" fill="url(#petalGrad)" transform="rotate(45)"/>
+              <ellipse cx="0" cy="-16" rx="7" ry="15" fill="url(#petalGrad)" transform="rotate(67.5)"/>
+              <ellipse cx="0" cy="-16" rx="7" ry="15" fill="url(#petalGrad)" transform="rotate(90)"/>
+              <ellipse cx="0" cy="-16" rx="7" ry="15" fill="url(#petalGrad)" transform="rotate(112.5)"/>
+              <ellipse cx="0" cy="-16" rx="7" ry="15" fill="url(#petalGrad)" transform="rotate(135)"/>
+              <ellipse cx="0" cy="-16" rx="7" ry="15" fill="url(#petalGrad)" transform="rotate(157.5)"/>
+              <ellipse cx="0" cy="-16" rx="7" ry="15" fill="url(#petalGrad)" transform="rotate(180)"/>
+              <ellipse cx="0" cy="-16" rx="7" ry="15" fill="url(#petalGrad)" transform="rotate(202.5)"/>
+              <ellipse cx="0" cy="-16" rx="7" ry="15" fill="url(#petalGrad)" transform="rotate(225)"/>
+              <ellipse cx="0" cy="-16" rx="7" ry="15" fill="url(#petalGrad)" transform="rotate(247.5)"/>
+              <ellipse cx="0" cy="-16" rx="7" ry="15" fill="url(#petalGrad)" transform="rotate(270)"/>
+              <ellipse cx="0" cy="-16" rx="7" ry="15" fill="url(#petalGrad)" transform="rotate(292.5)"/>
+              <ellipse cx="0" cy="-16" rx="7" ry="15" fill="url(#petalGrad)" transform="rotate(315)"/>
+              <ellipse cx="0" cy="-16" rx="7" ry="15" fill="url(#petalGrad)" transform="rotate(337.5)"/>
+            </g>
+            <circle cx="0" cy="0" r="9.5" fill="url(#centerGrad)"/>
+            <circle cx="-2.5" cy="-2" r="1.1" fill="#c48a3a" opacity=".55"/>
+            <circle cx="2" cy="1.5" r=".9" fill="#c48a3a" opacity=".4"/>
+            <circle cx="1" cy="-3" r=".7" fill="#d4a05a" opacity=".45"/>
+          </g>
+        </defs>
+
+        <g class="tree-group" id="tree">
+          <!-- tronco y ramas -->
+          <path d="M190 470 C186 390, 184 320, 188 250 C190 210, 192 180, 190 150"
+                fill="none" stroke="url(#barkGrad)" stroke-width="16" stroke-linecap="round"/>
+          <path d="M188 300 C150 270, 120 240, 95 205"
+                fill="none" stroke="url(#barkGrad)" stroke-width="10" stroke-linecap="round"/>
+          <path d="M190 275 C230 250, 265 220, 295 185"
+                fill="none" stroke="url(#barkGrad)" stroke-width="10" stroke-linecap="round"/>
+          <path d="M189 230 C155 205, 130 175, 112 145"
+                fill="none" stroke="url(#barkGrad)" stroke-width="8" stroke-linecap="round"/>
+          <path d="M191 215 C225 195, 250 165, 268 135"
+                fill="none" stroke="url(#barkGrad)" stroke-width="8" stroke-linecap="round"/>
+          <path d="M190 185 C170 160, 155 135, 145 110"
+                fill="none" stroke="url(#barkGrad)" stroke-width="6" stroke-linecap="round"/>
+          <path d="M190 175 C215 155, 230 130, 242 105"
+                fill="none" stroke="url(#barkGrad)" stroke-width="6" stroke-linecap="round"/>
+          <path d="M189 340 C155 330, 130 320, 110 300"
+                fill="none" stroke="url(#barkGrad)" stroke-width="7" stroke-linecap="round"/>
+          <path d="M191 355 C225 345, 255 330, 275 305"
+                fill="none" stroke="url(#barkGrad)" stroke-width="7" stroke-linecap="round"/>
+
+          <!-- hojas -->
+          <ellipse cx="130" cy="310" rx="18" ry="9" fill="url(#leafGrad)" transform="rotate(-35 130 310)" opacity=".9"/>
+          <ellipse cx="250" cy="325" rx="18" ry="9" fill="url(#leafGrad)" transform="rotate(30 250 325)" opacity=".9"/>
+          <ellipse cx="150" cy="220" rx="14" ry="7" fill="url(#leafGrad)" transform="rotate(-40 150 220)" opacity=".85"/>
+          <ellipse cx="235" cy="200" rx="14" ry="7" fill="url(#leafGrad)" transform="rotate(38 235 200)" opacity=".85"/>
+
+          <!-- flores -->
+          <g filter="url(#soft)" id="flowers">
+            <g transform="translate(95 205)"><g class="flower-node" style="--s:1.05"><use href="#sunflower" transform="scale(1.05)"/></g></g>
+            <g transform="translate(295 185)"><g class="flower-node"><use href="#sunflower" transform="scale(1.1)"/></g></g>
+            <g transform="translate(112 145)"><g class="flower-node"><use href="#sunflower" transform="scale(.95)"/></g></g>
+            <g transform="translate(268 135)"><g class="flower-node"><use href="#sunflower"/></g></g>
+            <g transform="translate(145 110)"><g class="flower-node"><use href="#sunflower" transform="scale(.9)"/></g></g>
+            <g transform="translate(242 105)"><g class="flower-node"><use href="#sunflower" transform="scale(.95)"/></g></g>
+            <g transform="translate(190 95)"><g class="flower-node"><use href="#sunflower" transform="scale(1.15)"/></g></g>
+            <g transform="translate(165 145)"><g class="flower-node"><use href="#sunflower" transform="scale(.85)"/></g></g>
+            <g transform="translate(215 140)"><g class="flower-node"><use href="#sunflower" transform="scale(.88)"/></g></g>
+            <g transform="translate(175 175)"><g class="flower-node"><use href="#sunflower" transform="scale(.8)"/></g></g>
+            <g transform="translate(210 170)"><g class="flower-node"><use href="#sunflower" transform="scale(.82)"/></g></g>
+            <g transform="translate(110 300)"><g class="flower-node"><use href="#sunflower" transform="scale(.9)"/></g></g>
+            <g transform="translate(275 305)"><g class="flower-node"><use href="#sunflower" transform="scale(.95)"/></g></g>
+            <g transform="translate(130 250)"><g class="flower-node"><use href="#sunflower" transform="scale(.75)"/></g></g>
+            <g transform="translate(255 240)"><g class="flower-node"><use href="#sunflower" transform="scale(.78)"/></g></g>
+            <g transform="translate(190 210)"><g class="flower-node"><use href="#sunflower" transform="scale(.7)"/></g></g>
+            <g transform="translate(155 195)"><g class="flower-node"><use href="#sunflower" transform="scale(.72)"/></g></g>
+            <g transform="translate(225 190)"><g class="flower-node"><use href="#sunflower" transform="scale(.74)"/></g></g>
+          </g>
+        </g>
+      </svg>
     </div>
 
     <div class="message" id="message">
@@ -327,65 +337,54 @@
   </div>
 
 <script>
-  const canopy = document.getElementById('canopy');
   const tree = document.getElementById('tree');
-  const frame = document.getElementById('frame');
+  const scene = document.getElementById('scene');
   const message = document.getElementById('message');
   const start = document.getElementById('start');
   const again = document.getElementById('again');
+  const nodes = () => [...document.querySelectorAll('.flower-node')];
 
-  const spots = [
-    [18, 42], [38, 18], [58, 8], [78, 22], [102, 12],
-    [128, 20], [152, 14], [172, 34], [48, 48], [72, 40],
-    [96, 36], [120, 44], [144, 48], [64, 68], [90, 62],
-    [116, 70], [140, 66], [84, 90], [110, 88], [132, 92],
-    [28, 70], [160, 72], [50, 100], [150, 100]
-  ];
-
-  function makePetals(el, count) {
-    for (let i = 0; i < count; i++) {
-      const p = document.createElement('div');
-      p.className = 'petal';
-      p.style.transform = `rotate(${(360 / count) * i}deg)`;
-      el.appendChild(p);
-    }
-    const core = document.createElement('div');
-    core.className = 'core';
-    el.appendChild(core);
-  }
-
-  function buildFlowers() {
-    canopy.innerHTML = '';
-    spots.forEach(([x, y], i) => {
-      const f = document.createElement('div');
-      f.className = 'flower';
-      f.style.left = x + 'px';
-      f.style.top = y + 'px';
-      f.dataset.i = i;
-      makePetals(f, 8);
-      canopy.appendChild(f);
+  function resetFlowers() {
+    nodes().forEach(n => {
+      n.classList.remove('show', 'sway');
+      n.style.animationDelay = '';
     });
   }
 
   function bloom() {
-    const flowers = [...canopy.querySelectorAll('.flower')];
-    flowers.forEach((f, i) => {
-      setTimeout(() => f.classList.add('show'), 180 + i * 70);
+    nodes().forEach((n, i) => {
+      setTimeout(() => {
+        n.classList.add('show');
+        setTimeout(() => {
+          n.classList.remove('show');
+          n.classList.add('sway');
+          n.style.animationDelay = (i % 5) * 0.15 + 's';
+        }, 700);
+      }, 120 + i * 90);
     });
   }
 
+  function makeFallingPetal() {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '-10 -20 20 30');
+    svg.classList.add('petal-fall');
+    svg.style.left = (10 + Math.random() * 80) + '%';
+    svg.style.top = (6 + Math.random() * 18) + '%';
+    svg.style.animationDuration = (2.6 + Math.random() * 2) + 's';
+    const e = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
+    e.setAttribute('cx', '0');
+    e.setAttribute('cy', '-8');
+    e.setAttribute('rx', '5');
+    e.setAttribute('ry', '11');
+    e.setAttribute('fill', Math.random() > .5 ? '#ffcc22' : '#ffe566');
+    svg.appendChild(e);
+    scene.appendChild(svg);
+    setTimeout(() => svg.remove(), 5000);
+  }
+
   function spawnFalling() {
-    for (let i = 0; i < 10; i++) {
-      setTimeout(() => {
-        const f = document.createElement('div');
-        f.className = 'falling';
-        f.style.left = (12 + Math.random() * 76) + '%';
-        f.style.top = (8 + Math.random() * 20) + '%';
-        f.style.animationDuration = (2.4 + Math.random() * 1.8) + 's';
-        makePetals(f, 6);
-        frame.appendChild(f);
-        setTimeout(() => f.remove(), 4500);
-      }, i * 220);
+    for (let i = 0; i < 14; i++) {
+      setTimeout(makeFallingPetal, i * 180);
     }
   }
 
@@ -394,20 +393,19 @@
     again.classList.remove('show');
     message.classList.remove('show');
     tree.classList.remove('grown');
-    buildFlowers();
+    resetFlowers();
 
     requestAnimationFrame(() => {
       tree.classList.add('grown');
-      setTimeout(bloom, 700);
+      setTimeout(bloom, 850);
       setTimeout(() => {
         message.classList.add('show');
         spawnFalling();
         again.classList.add('show');
-      }, 2200);
+      }, 2800);
     });
   }
 
-  buildFlowers();
   start.addEventListener('click', play);
   again.addEventListener('click', play);
 </script>
