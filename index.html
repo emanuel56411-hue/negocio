@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Donde hubo fuego...</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,500&family=Caveat:wght@600&display=swap');
+
+  :root{
+    --bg: #0c0605;
+    --ember-core: #fff3c4;
+    --ember-mid: #ff9d3d;
+    --ember-out: #d94f2b;
+    --smoke: #58514c;
+    --cream: #f4e9dc;
+    --rose: #c9184a;
+    --rose-deep: #7a0f30;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html,body{
+    margin:0;
+    padding:0;
+    background: var(--bg);
+    min-height: 100vh;
+    overflow-x: hidden;
+    font-family: 'Cormorant Garamond', serif;
+  }
+
+  .stage{
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1.5rem;
+    text-align: center;
+    background:
+      radial-gradient(ellipse at 50% 68%, rgba(217,79,43,0.18), transparent 60%),
+      var(--bg);
+  }
+
+  .prompt{
+    color: var(--cream);
+    opacity: 0.65;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    font-size: 0.72rem;
+    margin-bottom: 2.5rem;
+    transition: opacity 0.6s ease;
+  }
+  .prompt.hidden{ opacity: 0; }
+
+  .match-wrap{
+    position: relative;
+    width: 220px;
+    height: 340px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .stick{
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 10px;
+    height: 210px;
+    transform: translateX(-50%);
+    background: linear-gradient(90deg, #c9a06a, #e8c48f 45%, #c9a06a);
+    border-radius: 5px;
+  }
+
+  .flame-holder{
+    position: absolute;
+    left: 50%;
+    bottom: 205px;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 90px;
+  }
+
+  .flame{
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform-origin: 50% 100%;
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    filter: blur(0.3px);
+  }
+
+  .flame.outer{
+    width: 34px;
+    height: 78px;
+    margin-left: -17px;
+    background: radial-gradient(circle at 50% 75%, var(--ember-core) 0%, var(--ember-mid) 45%, var(--ember-out) 78%, rgba(217,79,43,0) 100%);
+    animation: sway 1.6s ease-in-out infinite, flicker 0.35s ease-in-out infinite alternate;
+  }
+
+  .flame.inner{
+    width: 14px;
+    height: 40px;
+    margin-left: -7px;
+    bottom: 4px;
+    background: radial-gradient(circle at 50% 70%, #ffffff 0%, var(--ember-core) 55%, transparent 100%);
+    animation: sway 1.6s ease-in-out infinite, flicker 0.28s ease-in-out infinite alternate-reverse;
+  }
+
+  @keyframes sway{
+    0%,100%{ transform: rotate(-4deg); }
+    50%{ transform: rotate(5deg); }
+  }
+  @keyframes flicker{
+    0%{ transform: scaleY(1) scaleX(1); }
+    100%{ transform: scaleY(1.08) scaleX(0.94); }
+  }
+
+  .glow{
+    position: absolute;
+    left: 50%;
+    bottom: 215px;
+    transform: translate(-50%, 0);
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,157,61,0.35), rgba(255,157,61,0) 70%);
+    pointer-events: none;
+    transition: opacity 0.9s ease;
+  }
+
+  .smoke{
+    position: absolute;
+    left: 50%;
+    bottom: 250px;
+    width: 6px;
+    height: 6px;
+    margin-left: -3px;
+    border-radius: 50%;
+    background: var(--smoke);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .match-wrap.out .flame{ animation: none; opacity: 0; transition: opacity 0.25s ease; }
+  .match-wrap.out .glow{ opacity: 0; }
+  .match-wrap.out .stick{
+    background: linear-gradient(90deg, #3a3330, #524840 45%, #3a3330);
+  }
+
+  .rise{
+    animation: rise 2.6s ease-out forwards;
+  }
+  @keyframes rise{
+    0%{ opacity: 0; transform: translateY(0) translateX(0) scale(0.6); }
+    15%{ opacity: 0.55; }
+    100%{ opacity: 0; transform: translateY(-160px) translateX(var(--drift, 20px)) scale(2.2); }
+  }
+
+  .reveal{
+    margin-top: 2.5rem;
+    max-width: 320px;
+    opacity: 0;
+    transform: translateY(24px) scale(0.96);
+    transition: opacity 1s ease, transform 1s cubic-bezier(.2,.8,.2,1);
+    pointer-events: none;
+  }
+  .reveal.show{
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+  }
+
+  .ember-line{
+    color: var(--ember-mid);
+    font-style: italic;
+    font-size: 1.15rem;
+    letter-spacing: 0.02em;
+    margin: 0 0 1.4rem;
+    opacity: 0.9;
+  }
+
+  .card{
+    position: relative;
+    background: linear-gradient(180deg, #1c0d0e, #150708);
+    border: 1px solid rgba(201,24,74,0.35);
+    border-radius: 4px;
+    padding: 2.6rem 1.8rem 2.2rem;
+  }
+  .card::before, .card::after{
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border: 1px solid rgba(244,233,220,0.35);
+  }
+  .card::before{ top: 10px; left: 10px; border-right: none; border-bottom: none; }
+  .card::after{ bottom: 10px; right: 10px; border-left: none; border-top: none; }
+
+  .heart{
+    width: 34px;
+    height: 34px;
+    margin: 0 auto 1.2rem;
+    position: relative;
+    transform: rotate(45deg);
+    background: var(--rose);
+  }
+  .heart::before, .heart::after{
+    content: '';
+    position: absolute;
+    width: 34px;
+    height: 34px;
+    background: var(--rose);
+    border-radius: 50%;
+  }
+  .heart::before{ left: -17px; top: 0; }
+  .heart::after{ top: -17px; left: 0; }
+
+  .message{
+    font-family: 'Caveat', cursive;
+    color: var(--cream);
+    font-size: 1.7rem;
+    line-height: 1.5;
+    margin: 0 0 0.6rem;
+  }
+
+  .signature{
+    color: rgba(244,233,220,0.5);
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin: 0;
+  }
+
+  .again{
+    margin-top: 1.6rem;
+    background: none;
+    border: 1px solid rgba(244,233,220,0.25);
+    color: var(--cream);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    padding: 0.5rem 1.1rem;
+    border-radius: 999px;
+    cursor: pointer;
+    opacity: 0.55;
+    transition: opacity 0.3s ease, border-color 0.3s ease;
+  }
+  .again:hover{ opacity: 1; border-color: rgba(244,233,220,0.5); }
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <p class="prompt" id="prompt">Clic para apagar</p>
+
+  <div class="match-wrap" id="matchWrap">
+    <div class="glow" id="glow"></div>
+    <div class="flame-holder">
+      <div class="flame outer"></div>
+      <div class="flame inner"></div>
+    </div>
+    <div class="stick"></div>
+  </div>
+
+  <div class="reveal" id="reveal">
+    <p class="ember-line">Donde hubo fuego...</p>
+    <div class="card">
+      <div class="heart"></div>
+      <p class="message">Cenizas quedan,<br>pero el calor... se queda en mí.</p>
+      <p class="signature">Para ti</p>
+    </div>
+    <button class="again" id="again">encender de nuevo</button>
+  </div>
+</div>
+
+<script>
+  const wrap = document.getElementById('matchWrap');
+  const glow = document.getElementById('glow');
+  const reveal = document.getElementById('reveal');
+  const prompt = document.getElementById('prompt');
+  const again = document.getElementById('again');
+  let lit = true;
+
+  function spawnSmoke(){
+    for(let i=0;i<6;i++){
+      const p = document.createElement('div');
+      p.className = 'smoke rise';
+      p.style.setProperty('--drift', (Math.random()*60-30)+'px');
+      p.style.animationDelay = (i*0.12)+'s';
+      p.style.left = (50 + (Math.random()*10-5)) + '%';
+      wrap.appendChild(p);
+      setTimeout(()=>p.remove(), 2800);
+    }
+  }
+
+  function extinguish(){
+    if(!lit) return;
+    lit = false;
+    wrap.classList.add('out');
+    prompt.classList.add('hidden');
+    spawnSmoke();
+    setTimeout(()=>{
+      reveal.classList.add('show');
+    }, 500);
+  }
+
+  function relight(){
+    lit = true;
+    wrap.classList.remove('out');
+    prompt.classList.remove('hidden');
+    reveal.classList.remove('show');
+  }
+
+  wrap.addEventListener('click', extinguish);
+  again.addEventListener('click', (e)=>{ e.stopPropagation(); relight(); });
+</script>
+
+</body>
+</html>
